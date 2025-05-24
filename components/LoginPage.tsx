@@ -76,11 +76,11 @@ export default function LoginPage() {
                         alt="Logo"
                         style={{ height: 50, objectFit: "contain" }}
                     />
-                    <h1 style={{ fontWeight: "bold", marginTop: "5px" , justifyContent:"center", fontSize: "32px",  }}>BloX App</h1>
+                    <h1 style={{ fontWeight: "bold", marginTop: "5px", justifyContent: "center", fontSize: "32px" }}>BloX App</h1>
                 </div>
 
                 {/* Form */}
-                <h4 style={{ fontWeight: 'bold', paddingBottom: '24px', display: 'inline-block' }}>Login</h4>
+                <h4 style={{ fontWeight: 'bold', paddingBottom: '24px', display: 'inline-block', fontSize: "24px", }}>Login</h4>
                 <Form
                     form={form}
                     name="basic"
@@ -104,10 +104,14 @@ export default function LoginPage() {
                         style={{ marginBottom: "1.5em" }}
                     >
                         <div style={{ marginBottom: "0.5em", display: "flex" }}>
-                            <span style={{ fontWeight: 600 }}>Email</span>
+                            <span style={{ fontWeight: 600, fontSize: "14px", }}>Email</span>
                             <span style={{ color: "red" }}>*</span>
                         </div>
-                        <Input placeholder="Input your email..." />
+                        <Input placeholder="Input your email..."
+                            style={{
+                                fontSize: "14px",
+                                fontWeight: "400",
+                            }} />
                     </Form.Item>
 
                     {/* Access Token */}
@@ -118,10 +122,14 @@ export default function LoginPage() {
                         style={{ marginBottom: "1.5em" }}
                     >
                         <div style={{ marginBottom: "0.5em", display: "flex" }}>
-                            <span style={{ fontWeight: 600 }}>Access Token</span>
+                            <span style={{ fontWeight: 600, fontSize: "14px", }}>Access Token</span>
                             <span style={{ color: "red" }}>*</span>
                         </div>
-                        <Input.Password placeholder="Input your Go REST Access Token..." />
+                        <Input.Password placeholder="Input your Go REST Access Token..."
+                            style={{
+                                fontSize: "14px",
+                                fontWeight: "400",
+                            }} />
                     </Form.Item>
 
                     {/* Remember Me */}
@@ -131,6 +139,8 @@ export default function LoginPage() {
                         style={{
                             justifyContent: "flex-start",
                             marginBottom: 8,
+                            fontSize: "14px",
+                            fontWeight: 400
                         }}
                     >
                         <Checkbox>Remember me</Checkbox>
@@ -142,7 +152,7 @@ export default function LoginPage() {
                             type="primary"
                             htmlType="submit"
                             loading={isPending}
-                            style={{ width: "100%" }}
+                            style={{ width: "100%", fontSize: "14px", fontWeight: 600, color: 'white', backgroundColor: '#D3D3D3' }}
                             disabled={!isFormValid}
                         >
                             Login
