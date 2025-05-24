@@ -1,35 +1,40 @@
 "use client";
-import React from 'react';
-import { useRouter } from 'next/navigation';
-import type { FormProps } from 'antd';
-import { Button, Checkbox, Form, Input, message } from 'antd';
 
-type FieldType = {
-  username: string;
-  password: string;
-  remember?: boolean;
-};
+import React from "react";
+import { useRouter } from "next/navigation";
+import { Button, Checkbox, Form, Input, message } from "antd";
+import { useMutation } from "@tanstack/react-query";
+import { login, LoginPayload } from "@/services/authService";
 
-const LoginPage: React.FC = () => {
+type FormFields = LoginPayload & { remember?: boolean };
+
+export default function LoginPage() {
   const router = useRouter();
 
-  const onFinish: FormProps<FieldType>['onFinish'] = (values) => {
-    const { username, password, remember } = values;
+  const mutation = useMutation({
+    mutationFn: login,
+  });
 
-    if (username === 'validemail@example.com' && password === 'validtoken') {
-      message.success('Login successful! Redirecting to dashboard...');
+  const { mutateAsync, isPending } = mutation;
+
+  const onFinish = async (values: FormFields) => {
+    const { username, token, remember } = values;
+
+    try {
+      const user = await mutateAsync({ username, token });
+      message.success("Login successful! Redirecting to dashboard...");
       if (remember) {
-        localStorage.setItem('user', JSON.stringify({ username, password }));
+        localStorage.setItem("user", JSON.stringify({ username, token }));
       }
-      router.push('/dashboard');
-    } else {
-      message.error('Invalid username or access token. Please check!');
+      router.push("/dashboard");
+    } catch (error: any) {
+      message.error(error.message || "Invalid username or access token. Please check!");
     }
   };
 
-  const onFinishFailed: FormProps<FieldType>['onFinishFailed'] = (errorInfo) => {
-    console.log('Failed:', errorInfo);
-    message.error('Please check your input fields.');
+  const onFinishFailed = (errorInfo: any) => {
+    console.log("Failed:", errorInfo);
+    message.error("Please check your input fields.");
   };
 
   return (
@@ -43,33 +48,31 @@ const LoginPage: React.FC = () => {
       onFinishFailed={onFinishFailed}
       autoComplete="off"
     >
-      <Form.Item<FieldType>
+      <Form.Item<FormFields>
         label="Username"
         name="username"
-        rules={[{ required: true, message: 'Please check your username' }]}
+        rules={[{ required: true, message: "Please check your username" }]}
       >
         <Input placeholder="Input your email..." />
       </Form.Item>
 
-      <Form.Item<FieldType>
-        label="Password"
-        name="password"
-        rules={[{ required: true, message: 'Please check your valid token' }]}
+      <Form.Item<FormFields>
+        label="Token"
+        name="token"
+        rules={[{ required: true, message: "Please check your valid token" }]}
       >
         <Input.Password placeholder="Input your Go REST Access Token..." />
       </Form.Item>
 
-      <Form.Item<FieldType> name="remember" valuePropName="checked" label={null}>
+      <Form.Item<FormFields> name="remember" valuePropName="checked" label={null}>
         <Checkbox>Remember me</Checkbox>
       </Form.Item>
 
       <Form.Item label={null}>
-        <Button type="primary" htmlType="submit">
+        <Button type="primary" htmlType="submit" loading={isPending}>
           Login
         </Button>
       </Form.Item>
     </Form>
   );
-};
-
-export default LoginPage;
+}
