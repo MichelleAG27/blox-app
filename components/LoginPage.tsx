@@ -19,9 +19,13 @@ export default function LoginPage() {
 
     useEffect(() => {
         const storedUser = localStorage.getItem("user");
+        console.log("Stored user from localStorage:", storedUser);
         if (storedUser) {
             const { email, token } = JSON.parse(storedUser);
-            form.setFieldsValue({ email, token, remember: true });
+            console.log("Setting form fields:", { email, token });
+            setTimeout(() => {
+                form.setFieldsValue({ email, token, remember: true });
+            }, 0);
             setIsFormValid(true);
         }
     }, [form]);
@@ -126,63 +130,62 @@ export default function LoginPage() {
                     <Form
                         form={form}
                         name="basic"
-                        labelCol={{ span: 8 }}
-                        wrapperCol={{ span: 18 }}
-                        initialValues={{ remember: false }}
                         onFinish={onFinish}
-                        onFinishFailed={onFinishFailed}
                         onFieldsChange={onFieldsChange}
                         autoComplete="off"
                         requiredMark={false}
                     >
-                        {/* Email */}
-                        <Form.Item<FormFields>
-                            name="email"
-                            rules={[
-                                { required: true, message: "Please enter your email" },
-                                { type: "email", message: "Please enter a valid email address" },
-                            ]}
-                            validateTrigger={["onChange", "onBlur"]}
-                            style={{ marginBottom: "1.5em" }}
-                        >
-                            <div>
-                                <div style={{ marginBottom: "0.5em", display: "flex" }}>
-                                    <span style={{ fontWeight: 600, fontSize: "14px" }}>Email</span>
-                                    <span style={{ color: "red" }}>*</span>
-                                </div>
+                        <div style={{ marginBottom: "1.5em" }}>
+                            <label
+                                style={{
+                                    display: "block",
+                                    fontWeight: "600",
+                                    fontSize: 14,
+                                    marginBottom: 4,
+                                }}
+                                htmlFor="email"
+                            >
+                                Email <span style={{ color: "red" }}>*</span>
+                            </label>
+                            <Form.Item
+                                name="email"
+                                rules={[{ required: true, message: "Please enter your temail" }]}
+                                validateTrigger={["onChange", "onBlur"]}
+                                noStyle
+                            >
                                 <Input
+                                    id="email"
                                     placeholder="Input your email..."
-                                    style={{
-                                        fontSize: "14px",
-                                        fontWeight: "400",
-                                    }}
+                                    style={{ fontSize: 14, fontWeight: 400, width: "75%" }}
                                 />
-                            </div>
-                        </Form.Item>
+                            </Form.Item>
+                        </div>
 
-                        {/* Access Token */}
-                        <Form.Item<FormFields>
-                            name="token"
-                            rules={[{ required: true, message: "Please enter your token" }]}
-                            validateTrigger={["onChange", "onBlur"]}
-                            style={{ marginBottom: "1.5em" }}
-                        >
-                            <div>
-                                <div style={{ marginBottom: "0.5em", display: "flex" }}>
-                                    <span style={{ fontWeight: 600, fontSize: "14px" }}>
-                                        Access Token
-                                    </span>
-                                    <span style={{ color: "red" }}>*</span>
-                                </div>
+                        <div style={{ marginBottom: "1.5em" }}>
+                            <label
+                                style={{
+                                    display: "block",
+                                    fontWeight: "600",
+                                    fontSize: 14,
+                                    marginBottom: 4,
+                                }}
+                                htmlFor="token"
+                            >
+                                Access Token <span style={{ color: "red" }}>*</span>
+                            </label>
+                            <Form.Item
+                                name="token"
+                                rules={[{ required: true, message: "Please enter your token" }]}
+                                validateTrigger={["onChange", "onBlur"]}
+                                noStyle
+                            >
                                 <Input.Password
+                                    id="token"
                                     placeholder="Input your Go REST Access Token..."
-                                    style={{
-                                        fontSize: "14px",
-                                        fontWeight: "400",
-                                    }}
+                                    style={{ fontSize: 14, fontWeight: 400, width: "75%" }}
                                 />
-                            </div>
-                        </Form.Item>
+                            </Form.Item>
+                        </div>
 
                         {/* Remember Me */}
                         <Form.Item
@@ -234,7 +237,7 @@ export default function LoginPage() {
                     </footer>
                     </Form>
 
-                   
+
                 </div>
             </div>
 
