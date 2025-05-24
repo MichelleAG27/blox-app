@@ -1,7 +1,7 @@
-"use client"
+"use client";
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Button, Checkbox, Form, Input, message } from "antd";
+import { Button, Checkbox, Form, Input, message, Modal } from "antd";
 import { useMutation } from "@tanstack/react-query";
 import { login, LoginPayload } from "@/services/authService";
 
@@ -13,6 +13,9 @@ export default function LoginPage() {
     const mutation = useMutation({ mutationFn: login });
     const { mutateAsync, isPending } = mutation;
     const [isFormValid, setIsFormValid] = useState(false);
+
+    const [modalOpen, setModalOpen] = useState(false);
+    const [confirmLoading, setConfirmLoading] = useState(false);
 
     useEffect(() => {
         const storedUser = localStorage.getItem("user");
@@ -37,7 +40,9 @@ export default function LoginPage() {
         const { email, token, remember } = values;
         try {
             await mutateAsync({ email, token });
-            message.success("Login successful! Redirecting to dashboard...");
+
+            setModalOpen(true);
+
             if (remember) {
                 localStorage.setItem("user", JSON.stringify({ email, token }));
             } else {
@@ -45,12 +50,16 @@ export default function LoginPage() {
             }
 
             setTimeout(() => {
+                setModalOpen(false);
+                setConfirmLoading(false);
                 router.push("/dashboard");
-            }, 2000);
+            }, 2000); 
         } catch (error: any) {
             message.error("Invalid email or access token. Please check!");
+            console.error("Login error:", error); 
         }
     };
+
 
     const onFinishFailed = (errorInfo: any) => {
         message.error("Please check your input fields.");
@@ -67,20 +76,31 @@ export default function LoginPage() {
                 backgroundColor: "#f9f9f9",
             }}
         >
-            {/*Main*/}
             <div style={{ flex: 1, paddingLeft: 32, maxWidth: "100%", height: "auto" }}>
-                {/* Logo on top */}
                 <div style={{ textAlign: "center", marginBottom: "4em", display: "flex", gap: "1em" }}>
-                    <img
-                        src="/logo-navbar.png"
-                        alt="Logo"
-                        style={{ height: 50, objectFit: "contain" }}
-                    />
-                    <h1 style={{ fontWeight: "bold", marginTop: "5px", justifyContent: "center", fontSize: "32px" }}>BloX App</h1>
+                    <img src="/logo-navbar.png" alt="Logo" style={{ height: 50, objectFit: "contain" }} />
+                    <h1
+                        style={{
+                            fontWeight: "bold",
+                            marginTop: "5px",
+                            justifyContent: "center",
+                            fontSize: "32px",
+                        }}
+                    >
+                        BloX App
+                    </h1>
                 </div>
 
-                {/* Form */}
-                <h4 style={{ fontWeight: 'bold', paddingBottom: '24px', display: 'inline-block', fontSize: "24px", }}>Login</h4>
+                <h4
+                    style={{
+                        fontWeight: "bold",
+                        paddingBottom: "24px",
+                        display: "inline-block",
+                        fontSize: "24px",
+                    }}
+                >
+                    Login
+                </h4>
                 <Form
                     form={form}
                     name="basic"
@@ -103,15 +123,19 @@ export default function LoginPage() {
                         validateTrigger={["onChange", "onBlur"]}
                         style={{ marginBottom: "1.5em" }}
                     >
-                        <div style={{ marginBottom: "0.5em", display: "flex" }}>
-                            <span style={{ fontWeight: 600, fontSize: "14px", }}>Email</span>
-                            <span style={{ color: "red" }}>*</span>
+                        <div>
+                            <div style={{ marginBottom: "0.5em", display: "flex" }}>
+                                <span style={{ fontWeight: 600, fontSize: "14px" }}>Email</span>
+                                <span style={{ color: "red" }}>*</span>
+                            </div>
+                            <Input
+                                placeholder="Input your email..."
+                                style={{
+                                    fontSize: "14px",
+                                    fontWeight: "400",
+                                }}
+                            />
                         </div>
-                        <Input placeholder="Input your email..."
-                            style={{
-                                fontSize: "14px",
-                                fontWeight: "400",
-                            }} />
                     </Form.Item>
 
                     {/* Access Token */}
@@ -121,15 +145,19 @@ export default function LoginPage() {
                         validateTrigger={["onChange", "onBlur"]}
                         style={{ marginBottom: "1.5em" }}
                     >
-                        <div style={{ marginBottom: "0.5em", display: "flex" }}>
-                            <span style={{ fontWeight: 600, fontSize: "14px", }}>Access Token</span>
-                            <span style={{ color: "red" }}>*</span>
+                        <div>
+                            <div style={{ marginBottom: "0.5em", display: "flex" }}>
+                                <span style={{ fontWeight: 600, fontSize: "14px" }}>Access Token</span>
+                                <span style={{ color: "red" }}>*</span>
+                            </div>
+                            <Input.Password
+                                placeholder="Input your Go REST Access Token..."
+                                style={{
+                                    fontSize: "14px",
+                                    fontWeight: "400",
+                                }}
+                            />
                         </div>
-                        <Input.Password placeholder="Input your Go REST Access Token..."
-                            style={{
-                                fontSize: "14px",
-                                fontWeight: "400",
-                            }} />
                     </Form.Item>
 
                     {/* Remember Me */}
@@ -140,7 +168,7 @@ export default function LoginPage() {
                             justifyContent: "flex-start",
                             marginBottom: 8,
                             fontSize: "14px",
-                            fontWeight: 400
+                            fontWeight: 400,
                         }}
                     >
                         <Checkbox>Remember me</Checkbox>
@@ -152,14 +180,19 @@ export default function LoginPage() {
                             type="primary"
                             htmlType="submit"
                             loading={isPending}
-                            style={{ width: "100%", fontSize: "14px", fontWeight: 600, color: 'white', backgroundColor: '#D3D3D3' }}
+                            style={{
+                                width: "100%",
+                                fontSize: "14px",
+                                fontWeight: 600,
+                                color: "white",
+                                backgroundColor: "#D3D3D3",
+                            }}
                             disabled={!isFormValid}
                         >
                             Login
                         </Button>
                     </Form.Item>
                 </Form>
-
             </div>
 
             <div style={{ flex: 1, textAlign: "center" }}>
@@ -172,6 +205,16 @@ export default function LoginPage() {
                     }}
                 />
             </div>
+
+            <Modal
+                title="Login Successful"
+                open={modalOpen}
+                confirmLoading={confirmLoading}
+                footer={null}
+                onCancel={() => setModalOpen(false)}
+            >
+                <p>You have successfully logged in! Redirecting to the dashboard...</p>
+            </Modal>
         </div>
     );
 }
