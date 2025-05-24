@@ -6,3 +6,9 @@
 .nav_link {
     @apply text-base relative font-medium w-fit block after:block after:content-[''] after:absolute after:h-[3px] after:bg-yellow-400 after:rounded-sm text-white after:w-full after:scale-x-0 after:hover:scale-x-100 after:transition after:duration-300 after:origin-right
 }
+
+:where(.css-dev-only-do-not-override-vrrzze).ant-col-8 {
+    flex: 0 0 auto; /* Adjusts to default size behavior */
+    max-width: unset; /* Removes width restriction from the flexbox */
+}
+

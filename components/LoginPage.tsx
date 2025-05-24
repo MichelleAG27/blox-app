@@ -1,6 +1,5 @@
-"use client";
-
-import React from "react";
+"use client"
+import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button, Checkbox, Form, Input, message } from "antd";
 import { useMutation } from "@tanstack/react-query";
@@ -9,70 +8,147 @@ import { login, LoginPayload } from "@/services/authService";
 type FormFields = LoginPayload & { remember?: boolean };
 
 export default function LoginPage() {
-  const router = useRouter();
+    const [form] = Form.useForm<FormFields>();
+    const router = useRouter();
+    const mutation = useMutation({ mutationFn: login });
+    const { mutateAsync, isPending } = mutation;
+    const [isFormValid, setIsFormValid] = useState(false);
 
-  const mutation = useMutation({
-    mutationFn: login,
-  });
+    useEffect(() => {
+        const storedUser = localStorage.getItem("user");
+        if (storedUser) {
+            const { email, token } = JSON.parse(storedUser);
+            form.setFieldsValue({ email, token, remember: true });
+            setIsFormValid(true);
+        }
+    }, [form]);
 
-  const { mutateAsync, isPending } = mutation;
+    const onFieldsChange = () => {
+        const fieldsError = form.getFieldsError();
+        const hasErrors = fieldsError.some(({ errors }) => errors.length > 0);
 
-  const onFinish = async (values: FormFields) => {
-    const { username, token, remember } = values;
+        const values = form.getFieldsValue(["email", "token"]);
+        const allFilled = values.email && values.token;
 
-    try {
-      const user = await mutateAsync({ username, token });
-      message.success("Login successful! Redirecting to dashboard...");
-      if (remember) {
-        localStorage.setItem("user", JSON.stringify({ username, token }));
-      }
-      router.push("/dashboard");
-    } catch (error: any) {
-      message.error(error.message || "Invalid username or access token. Please check!");
-    }
-  };
+        setIsFormValid(!hasErrors && allFilled);
+    };
 
-  const onFinishFailed = (errorInfo: any) => {
-    console.log("Failed:", errorInfo);
-    message.error("Please check your input fields.");
-  };
+    const onFinish = async (values: FormFields) => {
+        const { email, token, remember } = values;
+        try {
+            await mutateAsync({ email, token });
+            message.success("Login successful! Redirecting to dashboard...");
+            if (remember) {
+                localStorage.setItem("user", JSON.stringify({ email, token }));
+            } else {
+                localStorage.removeItem("user");
+            }
 
-  return (
-    <Form
-      name="basic"
-      labelCol={{ span: 8 }}
-      wrapperCol={{ span: 16 }}
-      style={{ maxWidth: 600 }}
-      initialValues={{ remember: true }}
-      onFinish={onFinish}
-      onFinishFailed={onFinishFailed}
-      autoComplete="off"
-    >
-      <Form.Item<FormFields>
-        label="Username"
-        name="username"
-        rules={[{ required: true, message: "Please check your username" }]}
-      >
-        <Input placeholder="Input your email..." />
-      </Form.Item>
+            setTimeout(() => {
+                router.push("/dashboard");
+            }, 2000);
+        } catch (error: any) {
+            message.error("Invalid email or access token. Please check!");
+        }
+    };
 
-      <Form.Item<FormFields>
-        label="Token"
-        name="token"
-        rules={[{ required: true, message: "Please check your valid token" }]}
-      >
-        <Input.Password placeholder="Input your Go REST Access Token..." />
-      </Form.Item>
+    const onFinishFailed = (errorInfo: any) => {
+        message.error("Please check your input fields.");
+    };
 
-      <Form.Item<FormFields> name="remember" valuePropName="checked" label={null}>
-        <Checkbox>Remember me</Checkbox>
-      </Form.Item>
+    return (
+        <div
+            style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                height: "100vh",
+                overflow: "hidden",
+                backgroundColor: "#f9f9f9",
+            }}
+        >
+            <div style={{ flex: 1, paddingLeft: 32, paddingRight: 24, maxWidth: 600 }}>
+                <Form
+                    form={form}
+                    name="basic"
+                    labelCol={{ span: 8 }}
+                    wrapperCol={{ span: 20 }}
+                    initialValues={{ remember: false }}
+                    onFinish={onFinish}
+                    onFinishFailed={onFinishFailed}
+                    onFieldsChange={onFieldsChange}
+                    autoComplete="off"
+                    requiredMark={false}
+                >
+                    {/* Email */}
+                    <Form.Item<FormFields>
+                        name="email"
+                        rules={[
+                            { required: true, message: "Please enter your email" },
+                            { type: "email", message: "Please enter a valid email address" },
+                        ]}
+                        validateTrigger={["onChange", "onBlur"]}
+                        style={{ marginBottom: "1.5em" }}
+                    >
+                        <div style={{ marginBottom: "0.5em", display: "flex"}}>
+                            <span>Email</span>
+                            <span style={{ color: "red" }}>*</span>
+                        </div>
+                        <Input placeholder="Input your email..." />
+                    </Form.Item>
 
-      <Form.Item label={null}>
-        <Button type="primary" htmlType="submit" loading={isPending}>
-          Login
-        </Button>
-      </Form.Item>
-    </Form>
-  );
+                    {/* Access Token */}
+                    <Form.Item<FormFields>
+                        name="token"
+                        rules={[{ required: true, message: "Please enter your token" }]}
+                        validateTrigger={["onChange", "onBlur"]}
+                        style={{ marginBottom: "1.5em" }}
+                    >
+                        <div style={{ marginBottom: "0.5em", display: "flex"}}>
+                            <span>Access Token</span>
+                            <span style={{ color: "red" }}>*</span>
+                        </div>
+                        <Input.Password placeholder="Input your Go REST Access Token..." />
+                    </Form.Item>
+
+                    {/* Remember Me */}
+                    <Form.Item
+                        name="remember"
+                        valuePropName="checked"
+                        style={{
+                            justifyContent: "flex-start",
+                            marginBottom: 8,
+                        }}
+                    >
+                        <Checkbox>Remember me</Checkbox>
+                    </Form.Item>
+
+                    {/* Submit Button */}
+                    <Form.Item label={null} wrapperCol={{ span: 20 }}>
+                        <Button
+                            type="primary"
+                            htmlType="submit"
+                            loading={isPending}
+                            style={{ width: "100%" }}
+                            disabled={!isFormValid}
+                        >
+                            Login
+                        </Button>
+                    </Form.Item>
+                </Form>
+
+            </div>
+
+            <div style={{ flex: 1, textAlign: "center" }}>
+                <img
+                    src="/login-image.png"
+                    alt="Login Illustration"
+                    style={{
+                        maxWidth: "100%",
+                        height: "auto",
+                    }}
+                />
+            </div>
+        </div>
+    );
 }
