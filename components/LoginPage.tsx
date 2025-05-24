@@ -67,7 +67,20 @@ export default function LoginPage() {
                 backgroundColor: "#f9f9f9",
             }}
         >
-            <div style={{ flex: 1, paddingLeft: 32, paddingRight: 24, maxWidth: 600 }}>
+            {/*Main*/}
+            <div style={{ flex: 1, paddingLeft: 32, maxWidth: "100%", height: "auto" }}>
+                {/* Logo on top */}
+                <div style={{ textAlign: "center", marginBottom: "4em", display: "flex", gap: "1em" }}>
+                    <img
+                        src="/logo-navbar.png"
+                        alt="Logo"
+                        style={{ height: 50, objectFit: "contain" }}
+                    />
+                    <h1 style={{ fontWeight: "bold", marginTop: "5px" , justifyContent:"center", fontSize: "32px",  }}>BloX App</h1>
+                </div>
+
+                {/* Form */}
+                <h4 style={{ fontWeight: 'bold', paddingBottom: '24px', display: 'inline-block' }}>Login</h4>
                 <Form
                     form={form}
                     name="basic"
@@ -90,8 +103,8 @@ export default function LoginPage() {
                         validateTrigger={["onChange", "onBlur"]}
                         style={{ marginBottom: "1.5em" }}
                     >
-                        <div style={{ marginBottom: "0.5em", display: "flex"}}>
-                            <span>Email</span>
+                        <div style={{ marginBottom: "0.5em", display: "flex" }}>
+                            <span style={{ fontWeight: 600 }}>Email</span>
                             <span style={{ color: "red" }}>*</span>
                         </div>
                         <Input placeholder="Input your email..." />
@@ -104,8 +117,8 @@ export default function LoginPage() {
                         validateTrigger={["onChange", "onBlur"]}
                         style={{ marginBottom: "1.5em" }}
                     >
-                        <div style={{ marginBottom: "0.5em", display: "flex"}}>
-                            <span>Access Token</span>
+                        <div style={{ marginBottom: "0.5em", display: "flex" }}>
+                            <span style={{ fontWeight: 600 }}>Access Token</span>
                             <span style={{ color: "red" }}>*</span>
                         </div>
                         <Input.Password placeholder="Input your Go REST Access Token..." />
