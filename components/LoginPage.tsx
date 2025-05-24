@@ -53,13 +53,12 @@ export default function LoginPage() {
                 setModalOpen(false);
                 setConfirmLoading(false);
                 router.push("/dashboard");
-            }, 2000); 
+            }, 2000);
         } catch (error: any) {
             message.error("Invalid email or access token. Please check!");
-            console.error("Login error:", error); 
+            console.error("Login error:", error);
         }
     };
-
 
     const onFinishFailed = (errorInfo: any) => {
         message.error("Please check your input fields.");
@@ -76,125 +75,170 @@ export default function LoginPage() {
                 backgroundColor: "#f9f9f9",
             }}
         >
-            <div style={{ flex: 1, paddingLeft: 32, maxWidth: "100%", height: "auto" }}>
-                <div style={{ textAlign: "center", marginBottom: "4em", display: "flex", gap: "1em" }}>
-                    <img src="/logo-navbar.png" alt="Logo" style={{ height: 50, objectFit: "contain" }} />
-                    <h1
+            <div
+                style={{
+                    flex: 1,
+                    padding: 32,
+                    maxWidth: "100%",
+                    height: "100%",
+                    display: "flex",
+                    flexDirection: "column",
+                    justifyContent: "center",
+                }}
+            >
+                <div>
+                    <div
+                        style={{
+                            textAlign: "center",
+                            marginBottom: "2em",
+                            display: "flex",
+                            gap: "1em",
+                        }}
+                    >
+                        <img
+                            src="/logo-navbar.png"
+                            alt="Logo"
+                            style={{ height: 50, objectFit: "contain" }}
+                        />
+                        <h1
+                            style={{
+                                fontWeight: "bold",
+                                marginTop: "5px",
+                                justifyContent: "center",
+                                fontSize: "32px",
+                            }}
+                        >
+                            BloX App
+                        </h1>
+                    </div>
+
+                    <h4
                         style={{
                             fontWeight: "bold",
-                            marginTop: "5px",
-                            justifyContent: "center",
-                            fontSize: "32px",
+                            marginTop: "1em",
+                            paddingBottom: "24px",
+                            display: "inline-block",
+                            fontSize: "24px",
                         }}
                     >
-                        BloX App
-                    </h1>
-                </div>
-
-                <h4
-                    style={{
-                        fontWeight: "bold",
-                        paddingBottom: "24px",
-                        display: "inline-block",
-                        fontSize: "24px",
-                    }}
-                >
-                    Login
-                </h4>
-                <Form
-                    form={form}
-                    name="basic"
-                    labelCol={{ span: 8 }}
-                    wrapperCol={{ span: 20 }}
-                    initialValues={{ remember: false }}
-                    onFinish={onFinish}
-                    onFinishFailed={onFinishFailed}
-                    onFieldsChange={onFieldsChange}
-                    autoComplete="off"
-                    requiredMark={false}
-                >
-                    {/* Email */}
-                    <Form.Item<FormFields>
-                        name="email"
-                        rules={[
-                            { required: true, message: "Please enter your email" },
-                            { type: "email", message: "Please enter a valid email address" },
-                        ]}
-                        validateTrigger={["onChange", "onBlur"]}
-                        style={{ marginBottom: "1.5em" }}
+                        Login
+                    </h4>
+                    <Form
+                        form={form}
+                        name="basic"
+                        labelCol={{ span: 8 }}
+                        wrapperCol={{ span: 18 }}
+                        initialValues={{ remember: false }}
+                        onFinish={onFinish}
+                        onFinishFailed={onFinishFailed}
+                        onFieldsChange={onFieldsChange}
+                        autoComplete="off"
+                        requiredMark={false}
                     >
-                        <div>
-                            <div style={{ marginBottom: "0.5em", display: "flex" }}>
-                                <span style={{ fontWeight: 600, fontSize: "14px" }}>Email</span>
-                                <span style={{ color: "red" }}>*</span>
-                            </div>
-                            <Input
-                                placeholder="Input your email..."
-                                style={{
-                                    fontSize: "14px",
-                                    fontWeight: "400",
-                                }}
-                            />
-                        </div>
-                    </Form.Item>
-
-                    {/* Access Token */}
-                    <Form.Item<FormFields>
-                        name="token"
-                        rules={[{ required: true, message: "Please enter your token" }]}
-                        validateTrigger={["onChange", "onBlur"]}
-                        style={{ marginBottom: "1.5em" }}
-                    >
-                        <div>
-                            <div style={{ marginBottom: "0.5em", display: "flex" }}>
-                                <span style={{ fontWeight: 600, fontSize: "14px" }}>Access Token</span>
-                                <span style={{ color: "red" }}>*</span>
-                            </div>
-                            <Input.Password
-                                placeholder="Input your Go REST Access Token..."
-                                style={{
-                                    fontSize: "14px",
-                                    fontWeight: "400",
-                                }}
-                            />
-                        </div>
-                    </Form.Item>
-
-                    {/* Remember Me */}
-                    <Form.Item
-                        name="remember"
-                        valuePropName="checked"
-                        style={{
-                            justifyContent: "flex-start",
-                            marginBottom: 8,
-                            fontSize: "14px",
-                            fontWeight: 400,
-                        }}
-                    >
-                        <Checkbox>Remember me</Checkbox>
-                    </Form.Item>
-
-                    {/* Submit Button */}
-                    <Form.Item label={null} wrapperCol={{ span: 20 }}>
-                        <Button
-                            type="primary"
-                            htmlType="submit"
-                            loading={isPending}
-                            style={{
-                                width: "100%",
-                                fontSize: "14px",
-                                fontWeight: 600,
-                                color: "white",
-                                backgroundColor: "#D3D3D3",
-                            }}
-                            disabled={!isFormValid}
+                        {/* Email */}
+                        <Form.Item<FormFields>
+                            name="email"
+                            rules={[
+                                { required: true, message: "Please enter your email" },
+                                { type: "email", message: "Please enter a valid email address" },
+                            ]}
+                            validateTrigger={["onChange", "onBlur"]}
+                            style={{ marginBottom: "1.5em" }}
                         >
-                            Login
-                        </Button>
-                    </Form.Item>
-                </Form>
+                            <div>
+                                <div style={{ marginBottom: "0.5em", display: "flex" }}>
+                                    <span style={{ fontWeight: 600, fontSize: "14px" }}>Email</span>
+                                    <span style={{ color: "red" }}>*</span>
+                                </div>
+                                <Input
+                                    placeholder="Input your email..."
+                                    style={{
+                                        fontSize: "14px",
+                                        fontWeight: "400",
+                                    }}
+                                />
+                            </div>
+                        </Form.Item>
+
+                        {/* Access Token */}
+                        <Form.Item<FormFields>
+                            name="token"
+                            rules={[{ required: true, message: "Please enter your token" }]}
+                            validateTrigger={["onChange", "onBlur"]}
+                            style={{ marginBottom: "1.5em" }}
+                        >
+                            <div>
+                                <div style={{ marginBottom: "0.5em", display: "flex" }}>
+                                    <span style={{ fontWeight: 600, fontSize: "14px" }}>
+                                        Access Token
+                                    </span>
+                                    <span style={{ color: "red" }}>*</span>
+                                </div>
+                                <Input.Password
+                                    placeholder="Input your Go REST Access Token..."
+                                    style={{
+                                        fontSize: "14px",
+                                        fontWeight: "400",
+                                    }}
+                                />
+                            </div>
+                        </Form.Item>
+
+                        {/* Remember Me */}
+                        <Form.Item
+                            name="remember"
+                            valuePropName="checked"
+                            style={{
+                                justifyContent: "flex-start",
+                                marginBottom: 8,
+                                fontSize: "14px",
+                                fontWeight: 400,
+                            }}
+                        >
+                            <Checkbox>Remember me</Checkbox>
+                        </Form.Item>
+
+                        {/* Submit Button */}
+                        <Form.Item label={null} wrapperCol={{ span: 18 }}>
+                            <Button
+                                type="primary"
+                                htmlType="submit"
+                                loading={isPending}
+                                style={{
+                                    width: "100%",
+                                    fontSize: "14px",
+                                    fontWeight: 600,
+                                    color: "white",
+                                    backgroundColor: "#D3D3D3",
+                                }}
+                                disabled={!isFormValid}
+                            >
+                                Login
+                            </Button>
+                        </Form.Item>
+
+ {/* Footer */}
+                    <footer
+                        style={{
+                            textAlign: "center",
+                            marginTop: "2em",
+                            fontSize: "12px",
+                            color: "#999",
+                        }}
+                    >
+                        <p>
+                            Copyright © 2024 BloX App <br />
+                            All Rights Reserved <br />
+                            App version 1.0.0
+                        </p>
+                    </footer>
+                    </Form>
+
+                   
+                </div>
             </div>
 
+            {/*Image*/}
             <div style={{ flex: 1, textAlign: "center" }}>
                 <img
                     src="/login-image.png"
