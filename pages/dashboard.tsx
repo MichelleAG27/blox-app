@@ -1,9 +1,12 @@
 import CustomSider from "@/components/dashboard/CustomSidebar";
 import React, { useEffect, useState } from "react";
 import ReactECharts from "echarts-for-react";
-import { Card, Col, Row } from "antd";
+import { Card, Col, Row, Breadcrumb } from "antd";
 import { fetchUsers, fetchPosts } from "@/services/dashboardService";
 import DashboardTable from "@/components/dashboard/DashboardTable";
+import dynamic from 'next/dynamic';
+const DashboardFilled = dynamic(() => import('@ant-design/icons/DashboardFilled'), { ssr: false });
+
 
 const Dashboard: React.FC = () => {
   const [users, setUsers] = useState<any[]>([]);
@@ -149,13 +152,27 @@ const Dashboard: React.FC = () => {
             fontSize: "20px",
             fontWeight: "600",
             fontFamily: "Sora, sans-serif",
-            color: "#888",
+            color: "#000000",
             marginBottom: "8px",
             display: "inline-block",
           }}
         >
           Dashboard
         </span>
+        <Breadcrumb
+          style={{ marginBottom: "16px" }}
+          items={[
+            {
+              href: '',
+              title: (
+                <>
+                  <DashboardFilled style={{ color: "#5ccbe" }} />
+                  <span style={{ color: "#5ccbe", marginLeft: "8px" }}>Dashboard</span>
+                </>
+              ),
+            },
+          ]}
+        />
 
         {/* Summary Stats */}
         <Row gutter={[16, 16]} className="pb-12 mb-4">
