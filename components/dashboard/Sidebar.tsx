@@ -70,20 +70,49 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed, onMenuClick }) => {
         position: 'sticky',
         top: 64,
         height: 'calc(100vh - 64px)',
-        overflow: 'auto',
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'space-between',
         background: '#F9F9F9',
         transition: 'width 0.3s',
       }}
     >
-      <Menu
-        theme="light"
-        defaultSelectedKeys={[router.pathname]}
-        mode="inline"
-        items={items}
-        onClick={onMenuClick}
-        className="custom-menu"
-      />
+      <div
+        style={{
+          flex: 1,
+          overflowY: 'auto',
+        }}
+      >
+        <Menu
+          theme="light"
+          selectedKeys={[router.pathname]}
+          mode="inline"
+          items={items}
+          onClick={(menuItem) => {
+            console.log('Navigating to:', menuItem.key);
+            onMenuClick(menuItem);
+          }}
+          className="custom-menu"
+        />
+      </div>
+
+      {/* Footer sticky */}
+      <footer
+        style={{
+          textAlign: "center",
+          marginTop: "2em",
+          fontSize: "12px",
+          color: "#999",
+        }}
+      >
+        <p>
+          Copyright © 2024 BloX App <br />
+          All Rights Reserved <br />
+          App version 1.0.0
+        </p>
+      </footer>
     </Sider>
+
   );
 };
 
