@@ -33,7 +33,6 @@ export default function LoginPage() {
     const onFieldsChange = () => {
         const fieldsError = form.getFieldsError();
         const hasErrors = fieldsError.some(({ errors }) => errors.length > 0);
-
         const values = form.getFieldsValue(["email", "token"]);
         const allFilled = values.email && values.token;
 
@@ -220,21 +219,21 @@ export default function LoginPage() {
                             </Button>
                         </Form.Item>
 
- {/* Footer */}
-                    <footer
-                        style={{
-                            textAlign: "center",
-                            marginTop: "2em",
-                            fontSize: "12px",
-                            color: "#999",
-                        }}
-                    >
-                        <p>
-                            Copyright © 2024 BloX App <br />
-                            All Rights Reserved <br />
-                            App version 1.0.0
-                        </p>
-                    </footer>
+                        {/* Footer */}
+                        <footer
+                            style={{
+                                textAlign: "center",
+                                marginTop: "2em",
+                                fontSize: "12px",
+                                color: "#999",
+                            }}
+                        >
+                            <p>
+                                Copyright © 2024 BloX App <br />
+                                All Rights Reserved <br />
+                                App version 1.0.0
+                            </p>
+                        </footer>
                     </Form>
 
 

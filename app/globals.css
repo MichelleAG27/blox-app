@@ -8,7 +8,12 @@
 }
 
 :where(.css-dev-only-do-not-override-vrrzze).ant-col-8 {
-    flex: 0 0 auto; /* Adjusts to default size behavior */
-    max-width: unset; /* Removes width restriction from the flexbox */
+    flex: 0 0 auto; 
+    max-width: unset; 
 }
 
+.ant-layout-sider.ant-layout-sider-light,
+.ant-menu-light {
+  background-color: #f9f9f9 !important;
+  color: rgba(0, 0, 0, 0.88) !important;
+}
