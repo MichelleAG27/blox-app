@@ -1,9 +1,9 @@
-import React, { useState } from "react";
-import { Layout, Avatar, Dropdown, Tooltip } from 'antd';
-import { faUser, faCircleChevronLeft, faCircleChevronRight } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import Sidebar from './Sidebar';
-import { useRouter } from 'next/router';
+import React, { useState, useEffect } from "react";
+import { Layout, Avatar, Dropdown, Tooltip } from "antd";
+import { faUser, faCircleChevronLeft, faCircleChevronRight } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import Sidebar from "./Sidebar";
+import { useRouter } from "next/router";
 
 const { Header, Content } = Layout;
 
@@ -11,68 +11,98 @@ const SIDEBAR_WIDTH = 200;
 const SIDEBAR_COLLAPSED_WIDTH = 80;
 
 const profileMenu = [
-  { key: 'profile', label: 'Profile' },
-  { key: 'logout', label: 'Logout' },
+  { key: "logout", label: "Logout" },
 ];
 
 const CustomLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [collapsed, setCollapsed] = useState(false);
+  const [user, setUser] = useState<{ name: string; email: string } | null>(null);
   const router = useRouter();
 
+  // Load user dari localStorage/sessionStorage saat mount
+  useEffect(() => {
+    const storedUser =
+      localStorage.getItem("user") || sessionStorage.getItem("user");
+    if (storedUser) {
+      setUser(JSON.parse(storedUser));
+    } else {
+      setUser(null);
+
+    }
+  }, []);
+
+//Logout handle
+  const handleMenuClick = (e: { key: string }) => {
+    if (e.key === "logout") {
+      sessionStorage.removeItem("user");
+      setUser(null);
+      router.push("/");
+    }
+  };
+
   return (
-    <Layout style={{ minHeight: '100vh' }}>
-      {/* Header */}
+    <Layout style={{ minHeight: "100vh" }}>
       <Header
         style={{
-          position: 'sticky',
+          position: "sticky",
           top: 0,
           zIndex: 1000,
-          backgroundColor: '#fff',
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          padding: '0 24px',
-          boxShadow: '0 2px 8px #f0f1f2',
+          backgroundColor: "#fff",
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          padding: "0 24px",
+          boxShadow: "0 2px 8px #f0f1f2",
           height: 64,
         }}
       >
-        <div style={{ display: 'flex', alignItems: 'center' }}>
+        <div style={{ display: "flex", alignItems: "center" }}>
           <img src="/logo-main.png" alt="BloX Logo" style={{ height: 40 }} />
         </div>
 
-        <Dropdown menu={{ items: profileMenu }} placement="bottomRight" arrow>
-          <Avatar style={{ cursor: 'pointer' }} size="large" icon={<FontAwesomeIcon icon={faUser} />} />
-        </Dropdown>
+        <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
+          <div>
+            <div style={{ fontWeight: "bold" }}>{user?.name || "Guest"}</div>
+            <div style={{ fontSize: "12px", color: "#888" }}>{user?.email || "No Email"}</div>
+          </div>
+          <Dropdown
+            menu={{ items: profileMenu, onClick: handleMenuClick }}
+            placement="bottomRight"
+            arrow
+            disabled={!user}
+          >
+            <Avatar
+              style={{ cursor: user ? "pointer" : "default" }}
+              size="large"
+              icon={<FontAwesomeIcon icon={faUser} />}
+            />
+          </Dropdown>
+        </div>
       </Header>
 
       <Layout>
-        {/* Sidebar */}
-        <Sidebar
-          collapsed={collapsed}
-          onMenuClick={(menuItem) => router.push(menuItem.key)}
-        />
+        <Sidebar collapsed={collapsed} onMenuClick={(menuItem) => router.push(menuItem.key)} />
 
-        {/* Collapsible Sidebar Toggle */}
         <Tooltip title={collapsed ? "Expand Sidebar" : "Collapse Sidebar"}>
           <div
             onClick={() => setCollapsed(!collapsed)}
             style={{
-              position: 'fixed',
+              position: "fixed",
               top: 80,
               left: collapsed ? SIDEBAR_COLLAPSED_WIDTH : SIDEBAR_WIDTH - 4,
               zIndex: 1100,
               width: 18,
               height: 18,
-              color: '#DBDBDB',
-              backgroundColor: '#787878',
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center',
-              borderRadius: '50%',
-              cursor: 'pointer',
-              transition: 'left 0.3s, background-color 0.3s',
-              boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
-              userSelect: 'none',
+              color: "#DBDBDB",
+              backgroundColor: "#787878",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              borderRadius: "50%",
+              cursor: "pointer",
+              transition: "left 0.3s, background-color 0.3s",
+              boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
+              userSelect: "none",
             }}
           >
             <FontAwesomeIcon
@@ -87,7 +117,7 @@ const CustomLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => 
             margin: 24,
             padding: 24,
             minHeight: 280,
-            backgroundColor: '#fff',
+            backgroundColor: "#fff",
             borderRadius: 8,
           }}
         >

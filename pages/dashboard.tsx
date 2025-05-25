@@ -3,19 +3,25 @@ import React, { useEffect, useState } from "react";
 import ReactECharts from "echarts-for-react";
 import { Card, Col, Row } from "antd";
 import { fetchUsers, fetchPosts } from "@/services/dashboardService";
-import type { TooltipComponentOption } from "echarts";
+import DashboardTable from "@/components/dashboard/DashboardTable";
 
 const Dashboard: React.FC = () => {
   const [users, setUsers] = useState<any[]>([]);
+  const [userTotal, setUserTotal] = useState(0);
   const [posts, setPosts] = useState<any[]>([]);
+  const [postTotal, setPostTotal] = useState(0);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const usersData = await fetchUsers();
-        const postsData = await fetchPosts();
-        setUsers(usersData);
-        setPosts(postsData);
+        const usersResponse = await fetchUsers();
+        const postsResponse = await fetchPosts();
+
+        setUsers(usersResponse.data);      // hanya halaman 1
+        setUserTotal(usersResponse.total); // total user dari API header
+
+        setPosts(postsResponse.data);      // hanya halaman 1
+        setPostTotal(postsResponse.total); // total post dari API header
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -24,9 +30,14 @@ const Dashboard: React.FC = () => {
     fetchData();
   }, []);
 
+  // totalUsers = userTotal (total data semua users)
+  // totalPosts = postTotal (total data semua posts)
+
+  // userStatusCounts dan genderCounts masih hitung dari users (halaman 1)
+
   // Calculate stats
-  const totalUsers = users.length;
-  const totalPosts = posts.length;
+  const totalUsers = userTotal;
+  const totalPosts = postTotal;
 
   const userStatusCounts = users.reduce(
     (acc, user) => {
@@ -100,7 +111,6 @@ const Dashboard: React.FC = () => {
     },
   };
 
-
   const userStatusOptions = {
     tooltip: { trigger: "item" },
     series: [
@@ -146,6 +156,7 @@ const Dashboard: React.FC = () => {
         >
           Dashboard
         </span>
+
         {/* Summary Stats */}
         <Row gutter={[16, 16]} className="pb-12 mb-4">
           <Col xs={24} sm={12} md={6}>
@@ -176,6 +187,7 @@ const Dashboard: React.FC = () => {
               </p>
             </Card>
           </Col>
+
           <Col xs={24} sm={12} md={6}>
             <Card
               style={{ marginBottom: 16 }}
@@ -204,6 +216,7 @@ const Dashboard: React.FC = () => {
               </p>
             </Card>
           </Col>
+
           <Col xs={24} sm={12} md={6}>
             <Card
               style={{ marginBottom: 16 }}
@@ -228,10 +241,11 @@ const Dashboard: React.FC = () => {
                   margin: "0",
                 }}
               >
-                {userStatusCounts.active}
+                {userStatusCounts.active}/{userStatusCounts.inactive}
               </p>
             </Card>
           </Col>
+
           <Col xs={24} sm={12} md={6}>
             <Card
               style={{ marginBottom: 16 }}
@@ -278,7 +292,7 @@ const Dashboard: React.FC = () => {
               />
             </Card>
           </div>
-          
+
           {/* Ring Gauge Charts */}
           <div
             style={{
@@ -368,9 +382,15 @@ const Dashboard: React.FC = () => {
               />
             </Card>
           </div>
+
+
+        </div>
+        <div>
+          <DashboardTable />
         </div>
       </div>
     </CustomSider>
+
   );
 };
 
