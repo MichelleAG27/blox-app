@@ -15,7 +15,7 @@ export default function LoginPage() {
   const [isFormValid, setIsFormValid] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
   const [confirmLoading, setConfirmLoading] = useState(false);
-
+  const [hasTyped, setHasTyped] = useState(false);
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
     if (storedUser) {
@@ -26,11 +26,17 @@ export default function LoginPage() {
   }, [form]);
 
   const onFieldsChange = () => {
-    const fieldsError = form.getFieldsError();
-    const hasErrors = fieldsError.some(({ errors }) => errors.length > 0);
     const values = form.getFieldsValue(["email", "token"]);
-    const allFilled = values.email && values.token;
-    setIsFormValid(!hasErrors && allFilled);
+    // Set hasTyped ke true kalau user mulai isi salah satu field
+    if (!hasTyped && (values.email || values.token)) {
+      setHasTyped(true);
+    }
+    if (hasTyped) {
+      const fieldsError = form.getFieldsError();
+      const hasErrors = fieldsError.some(({ errors }) => errors.length > 0);
+      const allFilled = values.email && values.token;
+      setIsFormValid(!hasErrors && allFilled);
+    }
   };
 
   const handleRememberChange = (isChecked: boolean) => {
@@ -157,9 +163,12 @@ export default function LoginPage() {
                 </label>
                 <Form.Item
                   name="email"
-                  rules={[{ required: true, message: "Please enter your email" }]}
+                  rules={[
+                    { required: true, message: "Email is Required. Please input your email." },
+                    { type: "email", message: "Email format invalid." }
+
+                  ]}
                   validateTrigger={["onChange", "onBlur"]}
-                  noStyle
                 >
                   <Input
                     id="email"
@@ -183,9 +192,11 @@ export default function LoginPage() {
                 </label>
                 <Form.Item
                   name="token"
-                  rules={[{ required: true, message: "Please enter your token" }]}
+                  rules={[
+                    { required: true, message: "Token is required. Please input your token." },
+                    { min: 10, message: "Token must be at least 10 characters." }
+                  ]}
                   validateTrigger={["onChange", "onBlur"]}
-                  noStyle
                 >
                   <Input.Password
                     id="token"

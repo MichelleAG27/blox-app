@@ -144,7 +144,7 @@ const CreatePost = () => {
                                 </span>
                             }
                             name="userId"
-                            rules={[{ required: true, message: 'User is required!' }]}
+                            rules={[{ required: true, message: 'User is required. Please pick your user.' }]}
                         >
                             <Select
                                 showSearch
@@ -174,9 +174,9 @@ const CreatePost = () => {
                                 </span>
                             }
                             name="title"
-                            rules={[{ required: true, message: 'Title is required!' }]}
+                            rules={[{ required: true, message: 'Title is required. Please input the title.' }]}
                         >
-                            <Input placeholder="Enter post title" />
+                            <Input placeholder="Please fill post title..." />
                         </Form.Item>
 
                         <Form.Item
@@ -186,9 +186,9 @@ const CreatePost = () => {
                                 </span>
                             }
                             name="description"
-                            rules={[{ required: true, message: 'Description is required!' }]}
+                            rules={[{ required: true, message: 'Description is required. Please input the description.' }]}
                         >
-                            <TextArea rows={6} placeholder="Enter post description" />
+                            <TextArea rows={6} placeholder="Please fill post description..." />
                         </Form.Item>
 
                         <Form.Item>

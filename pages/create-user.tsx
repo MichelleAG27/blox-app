@@ -121,9 +121,9 @@ const CreateUser = () => {
                                 </span>
                             }
                             name="fullName"
-                            rules={[{ required: true, message: 'Full Name is required!' }]}
+                            rules={[{ required: true, message: 'Full name is required. Please input your full name.' }]}
                         >
-                            <Input placeholder="Enter full name" />
+                            <Input placeholder="Plese fill user full name..." />
                         </Form.Item>
 
                         <Form.Item
@@ -133,7 +133,7 @@ const CreateUser = () => {
                                 </span>
                             }
                             name="gender"
-                            rules={[{ required: true, message: 'Gender is required!' }]}
+                            rules={[{ required: true, message: 'Gender is required. Please pick user gender.' }]}
                         >
                             <Select placeholder="Select gender">
                                 <Option value="male">Male</Option>
@@ -149,8 +149,8 @@ const CreateUser = () => {
                             }
                             name="email"
                             rules={[
-                                { required: true, message: 'Email is required!' },
-                                { type: 'email', message: 'Please enter a valid email!' },
+                                { required: true, message: 'Email is required. Please input a valid email.' },
+                                { type: 'email', message: 'Please fill the email...' },
                             ]}
                         >
                             <Input placeholder="Enter email address" />
@@ -163,7 +163,7 @@ const CreateUser = () => {
                                 </span>
                             }
                             name="status"
-                            rules={[{ required: true, message: 'Status is required!' }]}
+                            rules={[{ required: true, message: 'Status is required. Please pick user status.' }]}
                         >
                             <Select placeholder="Select status">
                                 <Option value="active">Active</Option>
