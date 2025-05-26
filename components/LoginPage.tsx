@@ -5,7 +5,7 @@ import { Button, Checkbox, Form, Input, message, Modal } from "antd";
 import { useMutation } from "@tanstack/react-query";
 import { login, LoginPayload } from "@/services/authService";
 
-type FormFields = LoginPayload & { remember?: boolean };
+type FormFields = LoginPayload & { remember?: boolean; name?: string };
 
 export default function LoginPage() {
   const [form] = Form.useForm<FormFields>();
@@ -19,18 +19,9 @@ export default function LoginPage() {
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
     if (storedUser) {
-      const { email, token } = JSON.parse(storedUser);
-      setTimeout(() => {
-        form.setFieldsValue({ email, token, remember: true });
-      }, 0);
+      const { email, token, name } = JSON.parse(storedUser);
+      form.setFieldsValue({ email, token, name, remember: true });
       setIsFormValid(true);
-    } else {
-      const sessionUser = sessionStorage.getItem("user");
-      if (sessionUser) {
-        const { email, token } = JSON.parse(sessionUser);
-        form.setFieldsValue({ email, token, remember: false });
-        setIsFormValid(true);
-      }
     }
   }, [form]);
 
@@ -42,17 +33,35 @@ export default function LoginPage() {
     setIsFormValid(!hasErrors && allFilled);
   };
 
+  const handleRememberChange = (isChecked: boolean) => {
+    const storedUser = localStorage.getItem("user");
+
+    if (isChecked && storedUser) {
+
+      const { email, token, name } = JSON.parse(storedUser);
+      form.setFieldsValue({ email, token, name });
+      onFieldsChange();
+    } else if (!isChecked) {
+      // If Remember-Me uncheck, field empty
+      form.resetFields(["email", "token", "name"]);
+      onFieldsChange();
+    }
+  };
+
   const onFinish = async (values: FormFields) => {
     const { email, token, remember } = values;
     try {
-      await mutateAsync({ email, token });
+      const userData = await mutateAsync({ email, token });
+      const name = userData.name || "";
 
       setModalOpen(true);
 
       if (remember) {
-        localStorage.setItem("user", JSON.stringify({ email, token }));
+        localStorage.setItem("user", JSON.stringify({ email, token, name }));
       } else {
         localStorage.removeItem("user");
+        form.resetFields(["email", "token", "name", "remember"]);
+        setIsFormValid(false);
       }
 
       setTimeout(() => {
@@ -66,11 +75,7 @@ export default function LoginPage() {
   };
 
   return (
-    <div
-      style={{
-        marginRight: "16px",
-      }}
-    >
+    <div>
       <div
         style={{
           display: "flex",
@@ -152,7 +157,7 @@ export default function LoginPage() {
                 </label>
                 <Form.Item
                   name="email"
-                rules={[{ required: true, message: "Please enter your email" }]}
+                  rules={[{ required: true, message: "Please enter your email" }]}
                   validateTrigger={["onChange", "onBlur"]}
                   noStyle
                 >
@@ -178,7 +183,7 @@ export default function LoginPage() {
                 </label>
                 <Form.Item
                   name="token"
-                rules={[{ required: true, message: "Please enter your token" }]}
+                  rules={[{ required: true, message: "Please enter your token" }]}
                   validateTrigger={["onChange", "onBlur"]}
                   noStyle
                 >
@@ -200,8 +205,13 @@ export default function LoginPage() {
                   fontWeight: 400,
                 }}
               >
-                <Checkbox>Remember me</Checkbox>
+                <Checkbox
+                  onChange={(e) => handleRememberChange(e.target.checked)}
+                >
+                  Remember me
+                </Checkbox>
               </Form.Item>
+
 
               <Form.Item label={null} wrapperCol={{ span: 18 }}>
                 <Button
@@ -224,10 +234,10 @@ export default function LoginPage() {
                 style={{
                   textAlign: "center",
                   paddingTop: "2em",
-                  paddingRight:"4rem",
+                  paddingRight: "4rem",
                   fontSize: "12px",
                   color: "#999",
-                  width:"85%",
+                  width: "85%",
                 }}
               >
                 <h4>
@@ -253,6 +263,7 @@ export default function LoginPage() {
 
         <Modal
           title="Login Successful"
+          centered
           open={modalOpen}
           confirmLoading={confirmLoading}
           footer={null}

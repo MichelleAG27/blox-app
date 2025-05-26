@@ -4,6 +4,7 @@ import { faUser, faCircleChevronLeft, faCircleChevronRight } from "@fortawesome/
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Sidebar from "./Sidebar";
 import { useRouter } from "next/router";
+import Link from "next/link";
 
 const { Header, Content } = Layout;
 
@@ -19,7 +20,6 @@ const CustomLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => 
   const [user, setUser] = useState<{ name: string; email: string } | null>(null);
   const router = useRouter();
 
-  // Load user dari localStorage/sessionStorage saat mount
   useEffect(() => {
     const storedUser =
       localStorage.getItem("user") || sessionStorage.getItem("user");
@@ -31,7 +31,7 @@ const CustomLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => 
     }
   }, []);
 
-//Logout handle
+  //Logout handle
   const handleMenuClick = (e: { key: string }) => {
     if (e.key === "logout") {
       sessionStorage.removeItem("user");
@@ -57,13 +57,21 @@ const CustomLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => 
         }}
       >
         <div style={{ display: "flex", alignItems: "center" }}>
-          <img src="/logo-main.png" alt="BloX Logo" style={{ height: 40 }} />
+          <div style={{ display: "flex", alignItems: "center" }}>
+            <Link href="/">
+              <img src="/logo-main.png" alt="BloX Logo" style={{ height: 40, cursor: "pointer" }} />
+            </Link>
+          </div>
         </div>
 
         <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
           <div>
-            <div style={{ fontWeight: "bold" }}>{user?.name || "Guest"}</div>
-            <div style={{ fontSize: "12px", color: "#888" }}>{user?.email || "No Email"}</div>
+            <div style={{ fontWeight: "bold", marginBottom: "2px", lineHeight: 1 }}>
+              {user?.name || "Guest"}
+            </div>
+            <div style={{ fontSize: "12px", color: "#888", marginTop: 0, lineHeight: 1 }}>
+              {user?.email || "No Email"}
+            </div>
           </div>
           <Dropdown
             menu={{ items: profileMenu, onClick: handleMenuClick }}

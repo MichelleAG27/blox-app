@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Breadcrumb, Form, Input, Select, Button, Modal } from 'antd';
+import { Breadcrumb, Form, Input, Select, Button, Modal, Divider } from 'antd';
 import dynamic from 'next/dynamic';
 import axios from 'axios';
 import CustomSider from '@/components/dashboard/CustomSidebar';
@@ -95,6 +95,18 @@ const CreateUser = () => {
                 />
 
                 <div style={{ marginTop: 24, background: '#fff', borderRadius: 8 }}>
+                    < span style={{
+                        fontSize: '20px',
+                        fontWeight: '400',
+                        fontFamily: 'Sora, sans-serif',
+                        color: '#000000',
+                        marginBottom: '8px',
+                        display: 'inline-block',
+                    }}
+                    >
+                        Create User
+                    </span>
+                    <Divider style={{ margin: '2px 0 12px 0',  borderWidth: '1px', borderColor: '#000000'}} />
                     <Form
                         form={form}
                         layout="vertical"
@@ -104,7 +116,7 @@ const CreateUser = () => {
                     >
                         <Form.Item
                             label={
-                                <span>
+                                <span style={{fontSize:'14px', fontWeight:'600' }}>
                                     Full Name<span style={{ color: 'red' }}> *</span>
                                 </span>
                             }
@@ -116,7 +128,7 @@ const CreateUser = () => {
 
                         <Form.Item
                             label={
-                                <span>
+                                <span style={{fontSize:'14px', fontWeight:'600' }}>
                                     Gender<span style={{ color: 'red' }}> *</span>
                                 </span>
                             }
@@ -131,7 +143,7 @@ const CreateUser = () => {
 
                         <Form.Item
                             label={
-                                <span>
+                                <span style={{fontSize:'14px', fontWeight:'600' }}>
                                     Email<span style={{ color: 'red' }}> *</span>
                                 </span>
                             }
@@ -146,7 +158,7 @@ const CreateUser = () => {
 
                         <Form.Item
                             label={
-                                <span>
+                                <span style={{fontSize:'14px', fontWeight:'600', fontFamily:'Sora, sans-serif' }}>
                                     Status<span style={{ color: 'red' }}> *</span>
                                 </span>
                             }
@@ -164,7 +176,7 @@ const CreateUser = () => {
                                 type="primary"
                                 htmlType="submit"
                                 block
-                                style={{ backgroundColor: '#5cc8be', borderColor: '#5cc8be', alignItems: 'center', marginTop:'2em' }}
+                                style={{ backgroundColor: '#5cc8be', borderColor: '#5cc8be', alignItems: 'center', marginTop: '2em' }}
                             >
                                 Submit
                             </Button>

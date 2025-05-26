@@ -1,5 +1,3 @@
-@import url('https://fonts.googleapis.com/css2?family=Sora:wght@100..800&display=swap');
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -21,18 +19,19 @@
 
 body, 
 .ant-layout, 
-.ant-layout-header, 
-.ant-layout-content, 
-.ant-layout-footer, 
 .ant-btn, 
 .ant-input, 
 .ant-form-item, 
 .ant-checkbox-wrapper,
 .ant-breadcrumb,
 .ant-typography, 
+.ant-select-selection-search-input,
+.ant-modal,
+
 label, 
-footer, 
-.ant-modal{
+footer,
+span
+{
   font-family: "Sora", sans-serif !important;
 }
 
@@ -42,4 +41,8 @@ footer,
 
 .ant-tabs-ink-bar {
   background-color: #5CC8BE !important;
+}
+:where(.css-dev-only-do-not-override-vrrzze)[class^="ant-form"], 
+:where(.css-dev-only-do-not-override-vrrzze)[class*=" ant-form"] {
+    font-family: "Sora", sans-serif !important;
 }

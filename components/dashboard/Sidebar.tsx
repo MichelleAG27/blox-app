@@ -124,7 +124,6 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed, onMenuClick }) => {
         </footer>
       </div>
     </Sider>
-
   );
 };
 
