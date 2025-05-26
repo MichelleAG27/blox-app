@@ -166,8 +166,8 @@ const Dashboard: React.FC = () => {
               href: '',
               title: (
                 <>
-                  <DashboardFilled style={{ color: "#5ccbe" }} />
-                  <span style={{ color: "#5ccbe", marginLeft: "8px" }}>Dashboard</span>
+                  <DashboardFilled style={{ color: '#59A1A5', fontSize: 16 }} />
+                  <span style={{ fontWeight: '400', marginLeft: 8, color: '#59A1A5' }}>Dashboard</span>
                 </>
               ),
             },
