@@ -14,6 +14,8 @@ export default function LoginPage() {
   const { mutateAsync, isPending } = mutation;
   const [isFormValid, setIsFormValid] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
+  const [modalType, setModalType] = useState<"success" | "error">("success");
+  const [modalMessage, setModalMessage] = useState("");
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [hasTyped, setHasTyped] = useState(false);
   useEffect(() => {
@@ -57,9 +59,13 @@ export default function LoginPage() {
   const onFinish = async (values: FormFields) => {
     const { email, token, remember } = values;
     try {
+      setConfirmLoading(true);
       const userData = await mutateAsync({ email, token });
       const name = userData.name || "";
 
+      // Jika sukses
+      setModalType("success");
+      setModalMessage("You have successfully logged in! Redirecting to the dashboard...");
       setModalOpen(true);
 
       if (remember) {
@@ -76,9 +82,14 @@ export default function LoginPage() {
         router.push("/dashboard");
       }, 2000);
     } catch (error: any) {
-      message.error("Invalid email or access token. Please check!");
+      // Jika error
+      setModalType("error");
+      setModalMessage("Invalid email or access token. Please check.");
+      setModalOpen(true);
+      setConfirmLoading(false);
     }
   };
+
 
   return (
     <div>
@@ -273,15 +284,16 @@ export default function LoginPage() {
         </div>
 
         <Modal
-          title="Login Successful"
+          title={modalType === "success" ? "Login Successful" : "Login Failed"}
           centered
           open={modalOpen}
           confirmLoading={confirmLoading}
           footer={null}
           onCancel={() => setModalOpen(false)}
         >
-          <p>You have successfully logged in! Redirecting to the dashboard...</p>
+          <p>{modalMessage}</p>
         </Modal>
+
       </div>
     </div>
   );
