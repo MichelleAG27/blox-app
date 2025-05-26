@@ -72,45 +72,57 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed, onMenuClick }) => {
         height: 'calc(100vh - 64px)',
         display: 'flex',
         flexDirection: 'column',
-        justifyContent: 'space-between',
         background: '#F9F9F9',
         transition: 'width 0.3s',
+        overflow: 'hidden'
       }}
     >
       <div
         style={{
-          flex: 1,
-          overflowY: 'auto',
+          display: 'flex',
+          flexDirection: 'column',
+          height: '100%',
+          overflow: 'hidden'
         }}
       >
-        <Menu
-          theme="light"
-          selectedKeys={[router.pathname]}
-          mode="inline"
-          items={items}
-          onClick={(menuItem) => {
-            console.log('Navigating to:', menuItem.key);
-            onMenuClick(menuItem);
+        <div
+          style={{
+            flex: 1,
+            overflowY: 'auto',
           }}
-          className="custom-menu"
-        />
-      </div>
+        >
+          <Menu
+            theme="light"
+            selectedKeys={[router.pathname]}
+            mode="inline"
+            items={items}
+            onClick={(menuItem) => {
+              console.log('Navigating to:', menuItem.key);
+              onMenuClick(menuItem);
+            }}
+            className="custom-menu"
+          />
+        </div>
 
-      {/* Footer sticky */}
-      <footer
-        style={{
-          textAlign: "center",
-          marginTop: "2em",
-          fontSize: "12px",
-          color: "#999",
-        }}
-      >
-        <p>
-          Copyright © 2024 BloX App <br />
-          All Rights Reserved <br />
-          App version 1.0.0
-        </p>
-      </footer>
+        {/* Footer */}
+        <footer
+          style={{
+            textAlign: 'center',
+            marginTop: 'auto',
+            fontSize: '12px',
+            color: '#999',
+            padding: '1em 0',
+            background: '#F9F9F9',
+            borderTop: '1px solid #e8e8e8',
+          }}
+        >
+          <p>
+            Copyright © 2025 <strong>BloX App</strong> <br />
+            All Rights Reserved <br />
+            App version 1.0.0
+          </p>
+        </footer>
+      </div>
     </Sider>
 
   );

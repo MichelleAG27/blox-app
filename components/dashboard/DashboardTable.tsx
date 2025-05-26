@@ -37,8 +37,7 @@ const DashboardTable: React.FC = () => {
 
 
     // Users filter & search states
-    const [userFilterField, setUserFilterField] = useState<"name" | "email">("name");
-    const [userFilterValue, setUserFilterValue] = useState("");
+    const [userFilterValues, setUserFilterValues] = useState<{ name?: string; email?: string }>({});
     const [userSearchValue, setUserSearchValue] = useState("");
 
     // --- Posts state ---
@@ -51,8 +50,7 @@ const DashboardTable: React.FC = () => {
     const [postsLoading, setPostsLoading] = useState(false);
 
     // Posts filter & search states
-    const [postFilterField, setPostFilterField] = useState<"title" | "body">("title");
-    const [postFilterValue, setPostFilterValue] = useState("");
+    const [postFilterValues, setPostFilterValues] = useState<{ title?: string; body?: string }>({});
     const [postSearchValue, setPostSearchValue] = useState("");
 
     // Editing
@@ -64,8 +62,7 @@ const DashboardTable: React.FC = () => {
     // --- Fetch Users ---
     const fetchUsers = async (
         pagination = usersPagination,
-        filterField = userFilterField,
-        filterValue = userFilterValue,
+        filterValues = userFilterValues,
         searchValue = userSearchValue,
         sorter: SorterResult<User> | SorterResult<User>[] = {}
     ) => {
@@ -76,14 +73,8 @@ const DashboardTable: React.FC = () => {
                 per_page: pagination.pageSize,
             };
 
-            if (filterValue.trim() !== "") {
-                params[filterField] = filterValue.trim();
-            }
-
-            // Hapus bagian ini karena API tidak support:
-            // if (!Array.isArray(sorter) && sorter.field) {
-            //   params.sort = sorter.order === "ascend" ? sorter.field : `-${sorter.field}`;
-            // }
+            if (filterValues.name?.trim()) params.name = filterValues.name.trim();
+            if (filterValues.email?.trim()) params.email = filterValues.email.trim();
 
             const { data, headers } = await axios.get<User[]>(`${API_URL}/users`, {
                 headers: { Authorization: `Bearer ${TOKEN}` },
@@ -136,8 +127,7 @@ const DashboardTable: React.FC = () => {
     // --- Fetch Posts ---
     const fetchPosts = async (
         pagination = postsPagination,
-        filterField = postFilterField,
-        filterValue = postFilterValue,
+        filterValues = postFilterValues,
         searchValue = postSearchValue,
         sorter: SorterResult<Post> | SorterResult<Post>[] = {}
     ) => {
@@ -148,14 +138,8 @@ const DashboardTable: React.FC = () => {
                 per_page: pagination.pageSize,
             };
 
-            if (filterValue.trim() !== "") {
-                params[filterField] = filterValue.trim();
-            }
-
-            // Hapus sorting param dari API
-            // if (!Array.isArray(sorter) && sorter.field) {
-            //   params.sort = sorter.order === "ascend" ? sorter.field : `-${sorter.field}`;
-            // }
+            if (filterValues.title?.trim()) params.title = filterValues.title.trim();
+            if (filterValues.body?.trim()) params.body = filterValues.body.trim();
 
             const { data, headers } = await axios.get<Post[]>(`${API_URL}/posts`, {
                 headers: { Authorization: `Bearer ${TOKEN}` },
@@ -217,7 +201,7 @@ const DashboardTable: React.FC = () => {
         _filters: any,
         sorter: SorterResult<User> | SorterResult<User>[]
     ) => {
-        fetchUsers(pagination, userFilterField, userFilterValue, userSearchValue, sorter);
+        fetchUsers(pagination, userFilterValues, userSearchValue, sorter);
     };
 
     const handlePostsTableChange = (
@@ -225,41 +209,26 @@ const DashboardTable: React.FC = () => {
         _filters: any,
         sorter: SorterResult<Post> | SorterResult<Post>[]
     ) => {
-        fetchPosts(pagination, postFilterField, postFilterValue, postSearchValue, sorter);
+        fetchPosts(pagination, postFilterValues, postSearchValue, sorter);
     };
 
     // --- Filter & search handlers for Users ---
-    const onUserFilterFieldChange = (value: "name" | "email") => {
-        setUserFilterField(value);
-    };
-
-    const onUserFilterValueChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setUserFilterValue(e.target.value);
-    };
-
     const onUserSearchValueChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setUserSearchValue(e.target.value);
     };
 
     const applyUserFilter = () => {
-        fetchUsers({ ...usersPagination, current: 1 }, userFilterField, userFilterValue, userSearchValue);
+        fetchUsers({ ...usersPagination, current: 1 });
     };
 
     // --- Filter & search handlers for Posts ---
-    const onPostFilterFieldChange = (value: "title" | "body") => {
-        setPostFilterField(value);
-    };
-
-    const onPostFilterValueChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setPostFilterValue(e.target.value);
-    };
 
     const onPostSearchValueChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setPostSearchValue(e.target.value);
     };
 
     const applyPostFilter = () => {
-        fetchPosts({ ...postsPagination, current: 1 }, postFilterField, postFilterValue, postSearchValue);
+        fetchPosts({ ...postsPagination, current: 1 });
     };
 
     // --- Modal & CRUD ---
@@ -319,73 +288,73 @@ const DashboardTable: React.FC = () => {
 
     // --- Columns ---
     const userColumns = [
-    { title: "ID", dataIndex: "id", sorter: true },
-    { title: "Name", dataIndex: "name", sorter: true },
-    { title: "Email", dataIndex: "email", sorter: true },
-    { title: "Gender", dataIndex: "gender", sorter: true },
-    { title: "Status", dataIndex: "status", sorter: true },
-    {
-        title: "Actions",
-        render: (_: any, record: User) => {
-            const menu = (
-                <Menu>
-                    <Menu.Item key="edit" onClick={() => openEditModal(record, "user")}>
-                        Edit
-                    </Menu.Item>
-                    <Menu.Item key="delete">
-                        <Popconfirm
-                            title="Delete user?"
-                            onConfirm={() => onDelete(record.id, "users")}
-                            okText="Yes"
-                            cancelText="No"
-                        >
-                            <span style={{ color: 'red' }}>Delete</span>
-                        </Popconfirm>
-                    </Menu.Item>
-                </Menu>
-            );
-            return (
-                <Dropdown overlay={menu} trigger={['click']}>
-                    <Button icon={<EllipsisOutlined />} />
-                </Dropdown>
-            );
-        }
-    },
-];
+        { title: "ID", dataIndex: "id", sorter: true },
+        { title: "Name", dataIndex: "name", sorter: true },
+        { title: "Email", dataIndex: "email", sorter: true },
+        { title: "Gender", dataIndex: "gender", sorter: true },
+        { title: "Status", dataIndex: "status", sorter: true },
+        {
+            title: "Actions",
+            render: (_: any, record: User) => {
+                const menu = (
+                    <Menu>
+                        <Menu.Item key="edit" onClick={() => openEditModal(record, "user")}>
+                            Edit
+                        </Menu.Item>
+                        <Menu.Item key="delete">
+                            <Popconfirm
+                                title="Delete user?"
+                                onConfirm={() => onDelete(record.id, "users")}
+                                okText="Yes"
+                                cancelText="No"
+                            >
+                                <span style={{ color: 'red' }}>Delete</span>
+                            </Popconfirm>
+                        </Menu.Item>
+                    </Menu>
+                );
+                return (
+                    <Dropdown overlay={menu} trigger={['click']}>
+                        <Button icon={<EllipsisOutlined />} />
+                    </Dropdown>
+                );
+            }
+        },
+    ];
 
     const postColumns = [
-    { title: "ID", dataIndex: "id", sorter: true },
-    { title: "User ID", dataIndex: "user_id", sorter: true },
-    { title: "Title", dataIndex: "title", sorter: true },
-    { title: "Body", dataIndex: "body" },
-    {
-        title: "Actions",
-        render: (_: any, record: Post) => {
-            const menu = (
-                <Menu>
-                    <Menu.Item key="edit" onClick={() => openEditModal(record, "post")}>
-                        Edit
-                    </Menu.Item>
-                    <Menu.Item key="delete">
-                        <Popconfirm
-                            title="Delete post?"
-                            onConfirm={() => onDelete(record.id, "posts")}
-                            okText="Yes"
-                            cancelText="No"
-                        >
-                            <span style={{ color: 'red' }}>Delete</span>
-                        </Popconfirm>
-                    </Menu.Item>
-                </Menu>
-            );
-            return (
-                <Dropdown overlay={menu} trigger={['click']}>
-                    <Button icon={<EllipsisOutlined />} />
-                </Dropdown>
-            );
-        }
-    },
-];
+        { title: "ID", dataIndex: "id", sorter: true },
+        { title: "User ID", dataIndex: "user_id", sorter: true },
+        { title: "Title", dataIndex: "title", sorter: true },
+        { title: "Body", dataIndex: "body" },
+        {
+            title: "Actions",
+            render: (_: any, record: Post) => {
+                const menu = (
+                    <Menu>
+                        <Menu.Item key="edit" onClick={() => openEditModal(record, "post")}>
+                            Edit
+                        </Menu.Item>
+                        <Menu.Item key="delete">
+                            <Popconfirm
+                                title="Delete post?"
+                                onConfirm={() => onDelete(record.id, "posts")}
+                                okText="Yes"
+                                cancelText="No"
+                            >
+                                <span style={{ color: 'red' }}>Delete</span>
+                            </Popconfirm>
+                        </Menu.Item>
+                    </Menu>
+                );
+                return (
+                    <Dropdown overlay={menu} trigger={['click']}>
+                        <Button icon={<EllipsisOutlined />} />
+                    </Dropdown>
+                );
+            }
+        },
+    ];
 
     return (
         <div style={{ padding: 20 }}>
@@ -421,20 +390,18 @@ const DashboardTable: React.FC = () => {
                     <h2>Users</h2>
                     <Row gutter={8} style={{ marginBottom: 16 }}>
                         <Col>
-                            <Select
-                                value={userFilterField}
-                                onChange={onUserFilterFieldChange}
-                                style={{ width: 120 }}
-                            >
-                                <Select.Option value="name">Name</Select.Option>
-                                <Select.Option value="email">Email</Select.Option>
-                            </Select>
+                            <Input
+                                placeholder="Filter by name"
+                                value={userFilterValues.name || ""}
+                                onChange={(e) => setUserFilterValues((prev) => ({ ...prev, name: e.target.value }))}
+                                allowClear
+                            />
                         </Col>
                         <Col>
                             <Input
-                                placeholder="Filter value"
-                                value={userFilterValue}
-                                onChange={onUserFilterValueChange}
+                                placeholder="Filter by email"
+                                value={userFilterValues.email || ""}
+                                onChange={(e) => setUserFilterValues((prev) => ({ ...prev, email: e.target.value }))}
                                 allowClear
                             />
                         </Col>
@@ -442,7 +409,7 @@ const DashboardTable: React.FC = () => {
                             <Button
                                 onClick={applyUserFilter}
                                 type="primary"
-                                style={{ backgroundColor: '#5CC8BE', borderColor: '#5CC8BE', color: 'white' }}
+                                style={{ backgroundColor: "#5CC8BE", borderColor: "#5CC8BE", color: "white" }}
                             >
                                 Apply Filter
                             </Button>
@@ -453,23 +420,20 @@ const DashboardTable: React.FC = () => {
                                 placeholder="Search users"
                                 value={userSearchValue}
                                 onChange={onUserSearchValueChange}
-                                onSearch={() =>
-                                    fetchUsers(
-                                        { ...usersPagination, current: 1 },
-                                        userFilterField,
-                                        userFilterValue,
-                                        userSearchValue
-                                    )
-                                }
+                                onSearch={applyUserFilter}
                                 allowClear
                                 enterButton={
-                                    <Button style={{ backgroundColor: '#5CC8BE', borderColor: '#5CC8BE', color: 'white' }}>
+                                    <Button
+                                        style={{
+                                            backgroundColor: "#5CC8BE",
+                                            borderColor: "#5CC8BE",
+                                            color: "white",
+                                        }}
+                                    >
                                         Search
                                     </Button>
                                 }
-                                style={{ borderColor: '#5CC8BE' }}
                             />
-
                         </Col>
                     </Row>
 
@@ -490,28 +454,30 @@ const DashboardTable: React.FC = () => {
                     <h2>Posts</h2>
                     <Row gutter={8} style={{ marginBottom: 16 }}>
                         <Col>
-                            <Select
-                                value={postFilterField}
-                                onChange={onPostFilterFieldChange}
-                                style={{ width: 120 }}
-                            >
-                                <Select.Option value="title">Title</Select.Option>
-                                <Select.Option value="body">Body</Select.Option>
-                            </Select>
+                            <Input
+                                placeholder="Filter by title"
+                                value={postFilterValues.title || ""}
+                                onChange={(e) =>
+                                    setPostFilterValues((prev) => ({ ...prev, title: e.target.value }))
+                                }
+                                allowClear
+                            />
                         </Col>
                         <Col>
                             <Input
-                                placeholder="Filter value"
-                                value={postFilterValue}
-                                onChange={onPostFilterValueChange}
+                                placeholder="Filter by body"
+                                value={postFilterValues.body || ""}
+                                onChange={(e) =>
+                                    setPostFilterValues((prev) => ({ ...prev, body: e.target.value }))
+                                }
                                 allowClear
                             />
                         </Col>
                         <Col>
                             <Button
-                                onClick={applyUserFilter}
+                                onClick={applyPostFilter}
                                 type="primary"
-                                style={{ backgroundColor: '#5CC8BE', borderColor: '#5CC8BE', color: 'white' }}
+                                style={{ backgroundColor: "#5CC8BE", borderColor: "#5CC8BE", color: "white" }}
                             >
                                 Apply Filter
                             </Button>
@@ -522,21 +488,19 @@ const DashboardTable: React.FC = () => {
                                 placeholder="Search posts"
                                 value={postSearchValue}
                                 onChange={onPostSearchValueChange}
-                                onSearch={() =>
-                                    fetchPosts(
-                                        { ...postsPagination, current: 1 },
-                                        postFilterField,
-                                        postFilterValue,
-                                        postSearchValue
-                                    )
-                                }
+                                onSearch={applyPostFilter}
                                 allowClear
                                 enterButton={
-                                    <Button style={{ backgroundColor: '#5CC8BE', borderColor: '#5CC8BE', color: 'white' }}>
+                                    <Button
+                                        style={{
+                                            backgroundColor: "#5CC8BE",
+                                            borderColor: "#5CC8BE",
+                                            color: "white",
+                                        }}
+                                    >
                                         Search
                                     </Button>
                                 }
-                                style={{ borderColor: '#5CC8BE' }}
                             />
                         </Col>
                     </Row>
@@ -618,7 +582,6 @@ const DashboardTable: React.FC = () => {
             </Modal>
         </div>
     );
-
 };
 
 export default DashboardTable;
