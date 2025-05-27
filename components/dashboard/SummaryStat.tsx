@@ -7,7 +7,7 @@ interface Props {
   totalPosts: number;
 }
 
-const SummaryStats: React.FC<Props> = ({ users, totalUsers, totalPosts }) => {
+const SummaryStat: React.FC<Props> = ({ users, totalUsers, totalPosts }) => {
   const userStatusCounts = users.reduce(
     (acc, user) => {
       if (user.status === "active") acc.active++;
@@ -55,4 +55,4 @@ const SummaryStats: React.FC<Props> = ({ users, totalUsers, totalPosts }) => {
   );
 };
 
-export default SummaryStats;
+export default SummaryStat;

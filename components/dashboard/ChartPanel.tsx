@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Card } from "antd";
 import ReactECharts from "echarts-for-react";
-import UserStatusGauge from "./UserStatusGauge";
-import UserGenderGauge from "./UserGenderGauge";
+import UserStatusGauge from "./UserStatusChart";
+import UserGenderGauge from "./UserGenderChart";
 
 interface Props {
   users: any[];
@@ -15,9 +15,9 @@ const ChartsPanel: React.FC<Props> = ({ users, posts, totalUsers }) => {
 
   useEffect(() => {
     const handleResize = () => {
-      setIsMobile(window.innerWidth < 768); // breakpoint tablet/mobile
+      setIsMobile(window.innerWidth < 768);
     };
-    handleResize(); // cek langsung waktu mount
+    handleResize();
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);

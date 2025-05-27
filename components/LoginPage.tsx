@@ -29,7 +29,6 @@ export default function LoginPage() {
 
   const onFieldsChange = () => {
     const values = form.getFieldsValue(["email", "token"]);
-    // Set hasTyped ke true kalau user mulai isi salah satu field
     if (!hasTyped && (values.email || values.token)) {
       setHasTyped(true);
     }
@@ -63,7 +62,6 @@ export default function LoginPage() {
       const userData = await mutateAsync({ email, token });
       const name = userData.name || "";
 
-      // Jika sukses
       setModalType("success");
       setModalMessage("You have successfully logged in! Redirecting to the dashboard...");
       setModalOpen(true);
@@ -82,7 +80,7 @@ export default function LoginPage() {
         router.push("/dashboard");
       }, 2000);
     } catch (error: any) {
-      // Jika error
+      // If error
       setModalType("error");
       setModalMessage("Invalid email or access token. Please check.");
       setModalOpen(true);
@@ -234,7 +232,6 @@ export default function LoginPage() {
                 </Checkbox>
               </Form.Item>
 
-
               <Form.Item label={null} wrapperCol={{ span: 18 }}>
                 <Button
                   type="primary"
@@ -293,7 +290,6 @@ export default function LoginPage() {
         >
           <p>{modalMessage}</p>
         </Modal>
-
       </div>
     </div>
   );

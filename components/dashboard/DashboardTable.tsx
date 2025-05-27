@@ -23,7 +23,7 @@ interface Post {
 }
 
 const DashboardTable: React.FC = () => {
-    // --- Users state ---
+    // Users state
     const [users, setUsers] = useState<User[]>([]);
     const [usersPagination, setUsersPagination] = useState<TablePaginationConfig>({
         current: 1,
@@ -40,7 +40,7 @@ const DashboardTable: React.FC = () => {
     const [userFilterValues, setUserFilterValues] = useState<{ name?: string; email?: string }>({});
     const [userSearchValue, setUserSearchValue] = useState("");
 
-    // --- Posts state ---
+    // Posts state
     const [posts, setPosts] = useState<Post[]>([]);
     const [postsPagination, setPostsPagination] = useState<TablePaginationConfig>({
         current: 1,
@@ -59,7 +59,7 @@ const DashboardTable: React.FC = () => {
     const [modalVisible, setModalVisible] = useState(false);
     const [form] = Form.useForm();
 
-    // --- Fetch Users ---
+    // Fetch Users
     const fetchUsers = async (
         pagination = usersPagination,
         filterValues = userFilterValues,
@@ -119,7 +119,7 @@ const DashboardTable: React.FC = () => {
         }
     };
 
-    // --- Fetch Posts ---
+    // Fetch Posts
     const fetchPosts = async (
         pagination = postsPagination,
         filterValues = postFilterValues,
@@ -185,7 +185,7 @@ const DashboardTable: React.FC = () => {
         fetchPosts();
     }, []);
 
-    // --- Table change handlers ---
+    // Table change handlers 
     const handleUsersTableChange = (
         pagination: TablePaginationConfig,
         _filters: any,
@@ -202,7 +202,7 @@ const DashboardTable: React.FC = () => {
         fetchPosts(pagination, postFilterValues, postSearchValue, sorter);
     };
 
-    // --- Filter & search handlers for Users ---
+    // Filter & search handlers for Users
     const onUserSearchValueChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setUserSearchValue(e.target.value);
     };
@@ -211,7 +211,7 @@ const DashboardTable: React.FC = () => {
         fetchUsers({ ...usersPagination, current: 1 });
     };
 
-    // --- Filter & search handlers for Posts ---
+    // Filter & search handlers for Posts
     const onPostSearchValueChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setPostSearchValue(e.target.value);
     };
@@ -220,7 +220,7 @@ const DashboardTable: React.FC = () => {
         fetchPosts({ ...postsPagination, current: 1 });
     };
 
-    // --- Modal & CRUD ---
+    // Modal & CRUD
     const openEditModal = (record: User | Post, type: "user" | "post") => {
         setModalVisible(true);
         if (type === "user") {
@@ -275,7 +275,7 @@ const DashboardTable: React.FC = () => {
         }
     };
 
-    // --- Columns ---
+    // Columns
     const userColumns = [
         { title: "ID", dataIndex: "id", sorter: true },
         { title: "Name", dataIndex: "name", sorter: true },
