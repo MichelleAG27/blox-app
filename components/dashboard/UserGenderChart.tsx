@@ -10,8 +10,6 @@ interface Props {
 const UserGenderDoughnut: React.FC<Props> = ({ users, totalUsers }) => {
     const maleUsers = users.filter(user => user.gender==="male").length;
     const femaleUsers = totalUsers - maleUsers;
-    console.log(maleUsers);
-    console.log(femaleUsers);
     const data = [
         {
             value: maleUsers,

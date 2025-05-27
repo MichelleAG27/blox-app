@@ -5,7 +5,7 @@ import type { TablePaginationConfig, SorterResult } from "antd/es/table/interfac
 import axios from "axios";
 
 const API_URL = "https://gorest.co.in/public/v2";
-const TOKEN = "8af7ee5d85481fde941984822384dc207556ab823cda124759b2919cce92a413";
+const TOKEN = "b9d911c7c7d57324f6ea3ef68d9a04f78b803dcfcefd33cd6ff4c1428ac684e4";
 
 interface User {
     id: number;

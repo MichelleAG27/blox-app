@@ -11,9 +11,6 @@ const UsserStatusChart: React.FC<Props> = ({ users, totalUsers }) => {
   const activeUsers = users.filter(user => user.status === "active").length;
   const inactiveUsers = totalUsers - activeUsers;
 
-  console.log("Active users:", activeUsers);
-console.log("Inactive users:", inactiveUsers);
-
   const option = {
     tooltip: {
       trigger: "item",
