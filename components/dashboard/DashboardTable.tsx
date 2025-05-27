@@ -81,7 +81,6 @@ const DashboardTable: React.FC = () => {
                 params,
             });
 
-            // Filter search global secara lokal
             let filteredData = data;
             if (searchValue.trim() !== "") {
                 const s = searchValue.toLowerCase();
@@ -91,14 +90,11 @@ const DashboardTable: React.FC = () => {
                 );
             }
 
-            // Sorting secara lokal
             if (!Array.isArray(sorter) && sorter.field && sorter.order) {
                 filteredData.sort((a, b) => {
                     const field = sorter.field as keyof User;
                     let valA = a[field];
                     let valB = b[field];
-
-                    // Jika null/undefined, set ke string kosong agar tidak error
                     valA = valA ?? "";
                     valB = valB ?? "";
 
@@ -123,7 +119,6 @@ const DashboardTable: React.FC = () => {
         }
     };
 
-
     // --- Fetch Posts ---
     const fetchPosts = async (
         pagination = postsPagination,
@@ -146,7 +141,6 @@ const DashboardTable: React.FC = () => {
                 params,
             });
 
-            // Filter search global lokal
             let filteredData = data;
             if (searchValue.trim() !== "") {
                 const s = searchValue.toLowerCase();
@@ -157,13 +151,11 @@ const DashboardTable: React.FC = () => {
                 );
             }
 
-            // Sorting lokal
             if (!Array.isArray(sorter) && sorter.field && sorter.order) {
                 filteredData.sort((a, b) => {
                     const field = sorter.field as keyof Post;
                     let valA = a[field];
                     let valB = b[field];
-
                     valA = valA ?? "";
                     valB = valB ?? "";
 
@@ -188,8 +180,6 @@ const DashboardTable: React.FC = () => {
         }
     };
 
-
-    // --- On mount ---
     useEffect(() => {
         fetchUsers();
         fetchPosts();
@@ -222,7 +212,6 @@ const DashboardTable: React.FC = () => {
     };
 
     // --- Filter & search handlers for Posts ---
-
     const onPostSearchValueChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setPostSearchValue(e.target.value);
     };
