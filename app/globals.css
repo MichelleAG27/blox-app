@@ -2,20 +2,47 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+.nav_link {
+  @apply text-base relative font-medium w-fit block after:block after:content-[""] after:absolute after:h-[3px] after:bg-yellow-400 after:rounded-sm text-white after:w-full after:scale-x-0 after:hover:scale-x-100 after:transition after:duration-300 after:origin-right;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+:where(.css-dev-only-do-not-override-vrrzze).ant-col-8 {
+  flex: 0 0 auto;
+  max-width: unset;
 }
 
-body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+.ant-layout-sider.ant-layout-sider-light,
+.ant-menu-light {
+  background-color: #f9f9f9 !important;
+  color: rgba(0, 0, 0, 0.88) !important;
+}
+
+body, 
+.ant-layout, 
+.ant-btn, 
+.ant-input, 
+.ant-form-item, 
+.ant-checkbox-wrapper,
+.ant-breadcrumb,
+.ant-typography, 
+.ant-select-selection-search-input,
+.ant-modal,
+
+label, 
+footer,
+span
+{
+  font-family: "Sora", sans-serif !important;
+}
+
+.ant-tabs-tab.ant-tabs-tab-active {
+  color: #5CC8BE !important;
+}
+
+.ant-tabs-ink-bar {
+  background-color: #5CC8BE !important;
+}
+:where(.css-dev-only-do-not-override-vrrzze)[class^="ant-form"], 
+:where(.css-dev-only-do-not-override-vrrzze)[class*=" ant-form"] {
+    font-family: "Sora", sans-serif !important;
 }

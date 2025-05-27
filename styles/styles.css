@@ -1,0 +1,17 @@
+@import url('https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700&display=swap');
+
+
+.sora-text {
+  font-family: 'Sora', sans-serif;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+
+.custom-tabs .ant-tabs-tab.ant-tabs-tab-active {
+  color: #5CC8BE !important;
+}
+
+.custom-tabs .ant-tabs-ink-bar {
+  background-color: #5CC8BE !important;
+}
